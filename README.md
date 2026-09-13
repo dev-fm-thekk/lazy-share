@@ -2,47 +2,48 @@
 
 
 
-# [Project Name] 🎯
+# Lazy Share 🎯
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: [dev-fm-thekk]
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: [Abhiram A R] - [SCT College of Engineering]
 
 ### Project Description
-[2-3 lines about what your project does]
+You know how apps like Quick Share work — the closer your devices, the faster the transfer. LazyShare does the opposite. Get too close, and it pauses. Step away, and it speeds back up.
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+Every file transfer app on the market is obsessed with speed. Get close, go fast. It's efficient. It's convenient. It's boring. Worse — it means the person sending you a file gets to leave the moment the progress bar hits 100%, no small talk required. Modern technology, optimizing us out of standing near each other. Someone had to ask: what if it didn't? 
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+LazyShare inverts the entire premise of proximity-based sharing. Walk up to send a file, and it stops dead — too close, access denied. Back away, and it speeds right up, rewarding distance instead of punishing it. The only way to get your file across quickly is to not be near the person sending it. Efficient? No. Physically demanding? A little. Exactly what you signed up for? Also no.
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
-
-For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
+- Typescript
+- Expo
 
 ### Implementation
 For Software:
+LazyShare discovers nearby devices over local Wi-Fi (via mDNS/Zeroconf) and transfers files between them over a raw TCP socket, chunked and length-prefixed, with a JSON handshake and completion message; its gimmick is that a BLE RSSI scan estimates distance to the receiving device in real time, and the transfer deliberately pauses when devices are too close and speeds back up as they move apart — the opposite of how proximity-based sharing apps like Quick Share normally behave — all wrapped in a single-page white-themed landing site (`index.html`) with playful copy explaining the pointless mechanic and a GitHub-linked, APK-download call to action ready to deploy via GitHub Pages once the release URL and checksum verification are filled in.
+
 # Installation
-[commands]
+
+Clone repository
+```bash
+git clone https://github.com/dev-fm-thekk/lazy-share
+cd lazy-share
+npm install
+```
 
 # Run
-[commands]
+```bash
+npx expo start
+```
 
 ### Project Documentation
 For Software:
@@ -60,25 +61,6 @@ For Software:
 # Diagrams
 ![Workflow](Add your workflow/architecture diagram here)
 *Add caption explaining your workflow*
-
-For Hardware:
-
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
-
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
-
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
-
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
 
 ### Project Demo
 # Video
