@@ -1,1 +1,608 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LazyShare — a file transfer that needs its space</title>
+    <meta
+      name="description"
+      content="LazyShare pauses your file transfer when your phones get close, and resumes when you back away. The world's most emotionally unavailable way to share a file."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #fafaf8;
+        --ink: #16181c;
+        --muted: #6b7078;
+        --line: #e7e5e0;
+        --stop: #ff4d33;
+        --go: #00b37a;
+        --card: #ffffff;
+      }
 
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter", system-ui, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--stop);
+        outline-offset: 3px;
+      }
+
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 32px;
+      }
+
+      header {
+        padding: 26px 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 90deg,
+          var(--go),
+          var(--stop),
+          var(--go)
+        );
+        flex-shrink: 0;
+      }
+
+      .hero {
+        padding: 40px 0 96px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+        align-items: center;
+      }
+
+      .sticker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 100px;
+        padding: 7px 14px 7px 8px;
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 22px;
+      }
+
+      .sticker-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--stop);
+      }
+
+      h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: clamp(2.3rem, 4.6vw, 3.3rem);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        max-width: 13ch;
+      }
+
+      .lede {
+        margin-top: 22px;
+        font-size: 1.12rem;
+        line-height: 1.6;
+        color: var(--muted);
+        max-width: 46ch;
+      }
+
+      .lede strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .cta-row {
+        margin-top: 32px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--ink);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 15px 26px;
+        border-radius: 10px;
+        text-decoration: none;
+        transition:
+          transform 0.15s ease,
+          background 0.15s ease;
+      }
+
+      .cta:hover {
+        background: #2a2d33;
+        transform: translateY(-1px);
+      }
+      .cta svg {
+        flex-shrink: 0;
+      }
+
+      .cta-meta {
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .platform-note {
+        margin-top: 14px;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .platform-note a {
+        color: var(--muted);
+        text-decoration-color: var(--line);
+      }
+
+      /* Visual */
+      .visual {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .track {
+        position: absolute;
+        width: 82%;
+        height: 2px;
+        background: var(--line);
+        border-radius: 4px;
+      }
+
+      .phone {
+        position: relative;
+        z-index: 2;
+        width: 44px;
+        height: 84px;
+        border-radius: 9px;
+        background: var(--card);
+        border: 1.5px solid var(--ink);
+      }
+
+      .phone-a {
+        transform: translateX(-92px);
+      }
+      .phone-b {
+        transform: translateX(92px);
+        animation: wander 6s ease-in-out infinite;
+      }
+
+      @keyframes wander {
+        0%,
+        100% {
+          transform: translateX(92px);
+        }
+        50% {
+          transform: translateX(28px);
+        }
+      }
+
+      .status-tag {
+        position: absolute;
+        top: 14%;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        font-weight: 500;
+        padding: 6px 13px;
+        border-radius: 100px;
+        z-index: 3;
+        animation: statusflip 6s ease-in-out infinite;
+      }
+
+      @keyframes statusflip {
+        0%,
+        40% {
+          background: #ffe9e4;
+          color: var(--stop);
+          content: "paused";
+        }
+        50%,
+        90% {
+          background: #dff7ee;
+          color: var(--go);
+        }
+        100% {
+          background: #ffe9e4;
+          color: var(--stop);
+        }
+      }
+
+      .status-tag::before {
+        content: "too close — paused";
+        animation: statustext 6s ease-in-out infinite;
+      }
+
+      @keyframes statustext {
+        0%,
+        40% {
+          content: "too close — paused";
+        }
+        50%,
+        90% {
+          content: "sending";
+        }
+        100% {
+          content: "too close — paused";
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .phone-b {
+          animation: none;
+          transform: translateX(28px);
+        }
+        .status-tag,
+        .status-tag::before {
+          animation: none;
+        }
+        .status-tag {
+          background: #dff7ee;
+          color: var(--go);
+        }
+        .status-tag::before {
+          content: "sending";
+        }
+      }
+
+      /* Rules */
+      .strip {
+        border-top: 1px solid var(--line);
+        padding: 60px 0 68px;
+      }
+
+      .strip-head {
+        margin-bottom: 40px;
+      }
+
+      .strip-head h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .strip-head p {
+        color: var(--muted);
+        margin-top: 8px;
+        max-width: 44ch;
+      }
+
+      .rules {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+
+      .rule {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px 22px;
+        background: var(--card);
+      }
+
+      .rule-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.85rem;
+      }
+
+      .rule:nth-child(1) .rule-badge {
+        background: #eef2ff;
+        color: #4d5bce;
+      }
+      .rule:nth-child(2) .rule-badge {
+        background: #ffe9e4;
+        color: var(--stop);
+      }
+      .rule:nth-child(3) .rule-badge {
+        background: #dff7ee;
+        color: var(--go);
+      }
+
+      .rule h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-top: 14px;
+        margin-bottom: 8px;
+      }
+
+      .gh-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border: 1px solid var(--line);
+        border-radius: 100px;
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition:
+          border-color 0.15s ease,
+          color 0.15s ease;
+      }
+
+      .gh-link:hover {
+        border-color: var(--ink);
+        color: var(--ink);
+      }
+
+      .gh-link img {
+        width: 18px;
+        height: 18px;
+        display: block;
+        object-fit: contain;
+      }
+
+      .rule p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+
+      /* Why */
+      .why {
+        border-top: 1px solid var(--line);
+        padding: 56px 0 72px;
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 48px;
+        align-items: start;
+      }
+
+      .why h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        max-width: 14ch;
+      }
+
+      .why p {
+        color: var(--muted);
+        font-size: 1.02rem;
+        line-height: 1.65;
+        margin-bottom: 14px;
+      }
+
+      .why p:last-child {
+        margin-bottom: 0;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 26px 0 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.85rem;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      @media (max-width: 860px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .visual {
+          max-width: 320px;
+          margin: 0 auto;
+        }
+        .rules {
+          grid-template-columns: 1fr;
+        }
+        .why {
+          grid-template-columns: 1fr;
+        }
+        .wrap {
+          padding: 0 22px;
+        }
+        .phone-a {
+          transform: translateX(-70px);
+        }
+        @keyframes wander {
+          0%,
+          100% {
+            transform: translateX(70px);
+          }
+          50% {
+            transform: translateX(20px);
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div
+        class="wrap"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div class="brand">
+          LazyShare
+        </div>
+
+        <a
+          class="gh-link"
+          href="https://github.com/dev-fm-thekk/lazy-share"
+          target="_blank"
+          rel="noopener"
+        >
+          <img src="assets/github.png" alt="" />
+          <span>View on GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <span class="sticker"
+              ><span class="sticker-dot" aria-hidden="true"></span> Built for
+              Useless Projects</span
+            >
+            <h1>A file transfer that needs its space</h1>
+            <p class="lede">
+              LazyShare moves files between nearby phones over Wi-Fi — except it
+              <strong>pauses the second your phones get close</strong>, and only
+              picks back up once you've backed away. It's the only app that
+              works better the more you ignore it.
+            </p>
+
+            <div class="cta-row">
+              <a
+                class="cta"
+                href="https://github.com/dev-fm-thekk/lazy-share/releases/download/beta/application-c892f7e4-475e-4197-b95d-3378b0fdc860.apk"
+                download
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 3V15M12 15L7 10M12 15L17 10"
+                    stroke="#fff"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M4 18V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V18"
+                    stroke="#fff"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Download APK
+              </a>
+              <span class="cta-meta">android · v1.0.0 · 250 MB</span>
+            </div>
+          </div>
+
+          <div class="visual" aria-hidden="true">
+            <div class="track"></div>
+            <div class="phone phone-a"></div>
+            <div class="phone phone-b"></div>
+            <div class="status-tag"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="strip">
+        <div class="wrap">
+          <div class="strip-head">
+            <h2>How to get a file across</h2>
+            <p>It's simple. It's just backwards.</p>
+          </div>
+          <div class="rules">
+            <div class="rule">
+              <span class="rule-badge">1</span>
+              <h3>Start the transfer</h3>
+              <p>
+                Pick a file and a nearby device. The progress bar starts moving
+                like any normal app.
+              </p>
+            </div>
+            <div class="rule">
+              <span class="rule-badge">2</span>
+              <h3>Walk toward your friend</h3>
+              <p>
+                Get within arm's reach and the transfer stops cold. LazyShare
+                does not do well up close.
+              </p>
+            </div>
+            <div class="rule">
+              <span class="rule-badge">3</span>
+              <h3>Take a step back</h3>
+              <p>
+                Put some distance between you and it resumes right where it left
+                off. Healthy boundaries, respected.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div
+        class="wrap"
+        style="
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 12px;
+        "
+      >
+        <span>LazyShare</span>
+        <span>a joke with a progress bar</span>
+      </div>
+    </footer>
+  </body>
+</html>
