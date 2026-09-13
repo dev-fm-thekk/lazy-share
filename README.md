@@ -6,7 +6,7 @@
 
 
 ## Basic Details
-### Team Name: [dev-fm-thekk]
+### Team Name: lazy-coder
 
 
 ### Team Members
