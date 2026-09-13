@@ -1,7 +1,5 @@
 <img width="1280" height="640" alt="git (1)" src="https://github.com/user-attachments/assets/8920b256-2ba8-4988-b824-5351134eb4bd" />
 
-
-
 # Lazy Share 🎯
 
 
@@ -10,7 +8,7 @@
 
 
 ### Team Members
-- Team Lead: [Abhiram A R] - [SCT College of Engineering]
+- Team Lead: Abhiram A R - SCT College of Engineering
 
 ### Project Description
 You know how apps like Quick Share work — the closer your devices, the faster the transfer. LazyShare does the opposite. Get too close, and it pauses. Step away, and it speeds back up.
